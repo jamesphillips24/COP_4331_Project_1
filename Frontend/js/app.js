@@ -19,7 +19,7 @@ if(signupBtn){
 
         console.log(signupData);
 
-        fetch("/api/signup", {
+        fetch("/LAMPAPI", {
             method: "GET",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(signupData)
@@ -50,7 +50,7 @@ if (loginBtn){
 
         console.log(loginData);
 
-        fetch("", {
+        fetch("/LAMPAPI/", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(loginData)
