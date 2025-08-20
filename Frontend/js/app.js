@@ -3,23 +3,39 @@ const loginBtn = document.getElementById("loginBtn");
 
 if(signupBtn){
     signupBtn.addEventListener("click", function(){
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const confirmPass = document.getElementById("confirmPassword").value;
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const confirmPass = document.getElementById("confirmPassword").value;
 
-    const signupData = {
-        name: name,
-        email: email,
-        username: username,
-        password: password,
-        confirmPass: confirmPass
-    };
+        const signupData = {
+            name: name,
+            email: email,
+            username: username,
+            password: password,
+            confirmPass: confirmPass
+        };
 
-    console.log(signupData);
-    });
+        console.log(signupData);
+
+        fetch("/api/signup", {
+            method: "GET",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify(signupData)
+        })
+        .then(response => {
+
+        })
+        .then(data => {
+
+        })
+        .catch(err => {
+
+        });
+        });
 }
+
 if (loginBtn){
     loginBtn.addEventListener("click", function(){
 
@@ -33,5 +49,20 @@ if (loginBtn){
         };
 
         console.log(loginData);
+
+        fetch("", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(loginData)
+        })
+        .then(response => {
+
+        })
+        .then(data => {
+
+        })
+        .catch(err => {
+
+        });
     });
 }
