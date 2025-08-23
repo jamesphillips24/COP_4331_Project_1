@@ -24,18 +24,21 @@ if(signupBtn){
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(signupData)
         })
-        .then(response => {
-
-        })
+        .then(response => response.json())
         .then(data => {
-
+            if(data.success){
+                //success case
+            } else {
+                //failure case
+            }
         })
-        .catch(err => {
-
-        });
-        });
+        .catch(err => console.error("Error:", err));
+    });
 }
 
+
+
+//sends login info to backend and handles response by saving cookie data and sending to contact page
 if (loginBtn){
     loginBtn.addEventListener("click", function(){
 
@@ -55,14 +58,31 @@ if (loginBtn){
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(loginData)
         })
-        .then(response => {
-
-        })
+        .then(response => response.json())
         .then(data => {
-
+            if(data.id <0 ) console.error("Login failed:", data.error);// failure case 
+            else if (data.id > 0 ){
+                saveUser(data);
+                window.location.href = "contacts.html";
+            }
         })
-        .catch(err => {
-
-        });
+        .catch(err => console.error("Error:", err));
     });
+}
+
+
+//takes in object that represents a user, returned by login response from backend.
+//is used to create or refresh cookies to represent that a this is the logged in user.
+//called on successful login, creating cookie, called after all CRUD operations to refresh the timer. lasts 20 minutes.
+function saveUser(data){
+    const user = {
+        id: data.id,
+        firstName: data.firstName,
+        lastName: data.lastName
+    };
+
+    const userString = JSON.stringify(user);
+    const encoded = encodeURIComponent(userString);
+    const expires = new Date(Date.now() + 20*60*1000).toUTCString();
+    document.cookie = `user=${encoded}; expires = ${expires}; path =/`;
 }
