@@ -24,7 +24,7 @@
 			returnWithInfo("", "", "", "Invalid User/Password combination");
 		}
 		else {
-			returnWithInfo($rowInfo["userID"], rowInfo["firstName"], rowInfo["lastName"], "");
+			returnWithInfo($rowInfo["userID"], $rowInfo["firstName"], $rowInfo["lastName"], "");
 		}
 		$sqlCMD->close();
 		$providedConnection->close();
@@ -37,7 +37,7 @@
 	}
 	
 	function returnWithInfo( $userID, $firstName, $lastName, $error ) {
-		$returnValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":' . $error . '}';
+		$returnValue = '{"id":' . $userID . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":"' . $error . '}';
 		sendResultInfoAsJson( $returnValue );
 	}
 	
