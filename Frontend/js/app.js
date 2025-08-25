@@ -26,11 +26,7 @@ if(signupBtn){
         })
         .then(response => response.json())
         .then(data => {
-            if(data.success){
-                //success case
-            } else {
-                //failure case
-            }
+            
         })
         .catch(err => console.error("Error:", err));
     });
@@ -53,7 +49,7 @@ if (loginBtn){
 
         console.log(loginData);
 
-        fetch("/LAMPAPI/", {
+        fetch("http://localhost/LAMPAPI/Login.php/", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(loginData)
@@ -72,7 +68,7 @@ if (loginBtn){
 
 
 //takes in object that represents a user, returned by login response from backend.
-//is used to create or refresh cookies to represent that a this is the logged in user.
+//is used to create or refresh cookies to represent that this is the logged in user.
 //called on successful login, creating cookie, called after all CRUD operations to refresh the timer. lasts 20 minutes.
 function saveUser(data){
     const user = {
@@ -85,4 +81,16 @@ function saveUser(data){
     const encoded = encodeURIComponent(userString);
     const expires = new Date(Date.now() + 20*60*1000).toUTCString();
     document.cookie = `user=${encoded}; expires = ${expires}; path =/`;
+}
+
+//checks to see current cookie data. if not found, send to login screen to relog. if found, returns ID #
+function readUser(){
+    const c = document.cookie.split("; ").find(c => c.startsWith("user="));
+    if(!c) {
+        window.location.href = "login.html";
+        return null;
+    }
+    else try{
+        return JSON.parse(decodeURIComponent(c.split("="[1])));
+    } catch { return null;}
 }

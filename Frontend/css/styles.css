@@ -1,10 +1,4 @@
-body{
-    background-color: #f5f6fa;
-    justify-content: center;
-    align-items: center;
-    display: flex;
 
-}
 .login{
     padding: 20px;
     background: white;
@@ -24,8 +18,6 @@ body{
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-
-/* CSS */
 .button-29 {
   align-items: center;
   appearance: none;
@@ -69,3 +61,97 @@ body{
   box-shadow: #3c4fe0 0 3px 7px inset;
   transform: translateY(2px);
 }
+
+.site-header {
+  position: fixed;   /* fixed to the viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  text-align: center;
+  background: #0f172a;
+  color: #fff;
+  padding: 16px 24px;
+  border-bottom: 1px solid #1f2937;
+}
+
+
+/* Card shell */
+.card {
+  margin-top: 135px;   /* small gap above */
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid #e5e7eb;
+}
+.card-header h2 { margin: 0; font-size: 16px; font-weight: 600; }
+
+/* Table wrapper enables horizontal scroll on small screens */
+.table-wrap { overflow-x: auto; }
+
+/* Table base */
+table.contacts {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;                  /* predictable column widths */
+  font-size: 14px;
+}
+
+/* Sticky header */
+.contacts thead th {
+  position: sticky; top: 0; z-index: 1;
+  background: #f8fafc;                  /* header bg */
+  color: #475569;                        /* header text */
+  text-transform: uppercase; letter-spacing: .04em; font-size: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px 12px;
+}
+
+/* Cells */
+.contacts tbody td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #0f172a;
+  vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; /* truncation */
+}
+
+/* Column sizing (tweak as needed) */
+.col-first   { width: 15%; }
+.col-last  { width: 15%; }
+.col-email  { width: 25%; }
+.col-phone   { width: 8%; }
+.col-actions{ width: 10%; text-align: right; }
+
+
+/* Action buttons (edit/delete) */
+.row-actions { display: inline-flex; gap: 8px; }
+.btn-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 32px; width: 32px; border-radius: 8px; border: 1px solid #e5e7eb;
+  background: #fff; cursor: pointer;
+}
+.btn-icon:hover { background: #f1f5f9; }
+.btn-danger { border-color: #fecaca; background: #fff0f0; }
+.btn-danger:hover { background: #fee2e2; }
+
+/* Empty state */
+.table-empty {
+  text-align: center; color: #64748b; padding: 24px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 720px) {
+  .col-first { display: none; }       /* hide less critical column */
+  .col-last { width: 42%; }
+  .col-email { width: 22%; }
+  .col-phone { width: 12% }
+  .col-actions { width: 12%; }
+}
+
+
