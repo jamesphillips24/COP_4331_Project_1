@@ -1,37 +1,6 @@
 const signupBtn = document.getElementById("signupBtn");
 const loginBtn = document.getElementById("loginBtn");
 
-if(signupBtn){
-    signupBtn.addEventListener("click", function(){
-        const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const confirmPass = document.getElementById("confirmPassword").value;
-
-        const signupData = {
-            name: name,
-            email: email,
-            username: username,
-            password: password,
-            confirmPass: confirmPass
-        };
-
-        console.log(signupData);
-
-        fetch("/LAMPAPI", {
-            method: "GET",
-            headers: { "Content-Type": "application/json"},
-            body: JSON.stringify(signupData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            
-        })
-        .catch(err => console.error("Error:", err));
-    });
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     if (loginBtn){
         logIn();
@@ -60,7 +29,7 @@ function logIn(){
 
         console.log(loginData);
 
-        fetch("http://localhost/LAMPAPI/Login.php/", {
+        fetch("http://localhost/LAMPAPI/Login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(loginData)
@@ -96,30 +65,40 @@ function signUp(){
         console.log(signupData);
 
         fetch("/LAMPAPI", {
-            method: "GET",
+            method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(signupData)
         })
         .then(response => response.json())
         .then(data => {
-            
+            //fill in data for signup
         })
         .catch(err => console.error("Error:", err));
     });
 }
 
 function contacts(){
-    let user = readUser();
-    fetch("http://localhost/LAMPAPI/Contacts.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify({user, search})
-    })
-    .then(response => response.json())
-    .then(data => {
-        
-    })
-    .catch(err => console.error("Error:", err));
+    function fetchContacts(search){
+        let user = readUser();
+        fetch("http://localhost/LAMPAPI/Contacts.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({userId: user, search: search})
+        })
+        .then(response => response.json())
+        .then(data => {
+            // procedure for fetching contacts 
+        })
+        .catch(err => console.error("Error:", err));
+    }
+
+    const q = document.getElementById("searchInput");
+
+
+    fetchContacts("");
+
+
+
 }
 
 
@@ -137,7 +116,7 @@ function saveUser(data){
     const userString = JSON.stringify(user);
     const encoded = encodeURIComponent(userString);
     const expires = new Date(Date.now() + 20*60*1000).toUTCString();
-    document.cookie = `user=${encoded}; expires = ${expires}; path =/`;
+    document.cookie = `user=${encoded}; expires=${expires}; path=/`;
 }
 
 //checks to see current cookie data. if not found, send to login screen to relog. if found, returns ID #
@@ -148,6 +127,6 @@ function readUser(){
         return null;
     }
     else try{
-        return JSON.parse(decodeURIComponent(c.split("="[1])));
+        return JSON.parse(decodeURIComponent(c.split("=")[1]));
     } catch { return null;}
 }
