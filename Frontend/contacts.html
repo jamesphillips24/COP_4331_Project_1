@@ -13,46 +13,34 @@
         <header class="site-header">
             <h1>Contacts</h1>
         </header>
-            <div class="card">
-  <div class="card-header">
-    <h2>Contacts</h2>
+  <div class="card">
+    <div class="card-header">
+      <h2>Contacts</h2>
+      <input placeholder="Search">
+    </div>
+    <div class="table-wrap">
+      <table class="contacts">
+        <thead>
+          <tr>
+            <th class="col-first">First</th>
+            <th class="col-last">Last</th>
+            <th class="col-email">Email</th>
+            <th class="col-phone">Phone</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="contactsTableBody"><!-- rows injected here -->
+          <tr>
+              <td> Seth</td>
+              <td> Jones</td>
+              <td> seth.jones@ucf.edu</td>
+              <td> 321-848-1834</td>
+              <td><button>edit</button><button>delete</button>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <div class="table-wrap">
-    <table class="contacts">
-      <thead>
-        <tr>
-          <th class="col-first">First</th>
-          <th class="col-last">Last</th>
-          <th class="col-email">Email</th>
-          <th class="col-phone">Phone</th>
-          <th class="col-actions"></th>
-        </tr>
-                <tr>
-                    <td> Seth</td>
-                    <td> Jones</td>
-                    <td> seth.jones@ucf.edu</td>
-                    <td> 321-848-1834</td>
-                    <td><button>edit</button><button>delete</button>
-                </tr>
-                 <tr>
-                    <td> Seth</td>
-                    <td> Jones</td>
-                    <td> seth.jones@ucf.edu</td>
-                    <td> 321-848-1834</td>
-                </tr>
-                 <tr>
-                    <td> Seth</td>
-                    <td> Jones</td>
-                    <td> seth.jones@ucf.edu</td>
-                    <td> 321-848-1834</td>
-                </tr>
-      </thead>
-      <tbody id="contactsTableBody"><!-- rows injected here --></tbody>
-    </table>
-  </div>
-</div>
-
-            </main>
-    </body>
+  </body>
 </html>

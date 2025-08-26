@@ -32,10 +32,21 @@ if(signupBtn){
     });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    if (loginBtn){
+        logIn();
+    }
+    if(signupBtn){
+        signUp();
+    }
+    if(contactsTableBody){
+        contacts();
+    }
+})
 
 
 //sends login info to backend and handles response by saving cookie data and sending to contact page
-if (loginBtn){
+function logIn(){
     loginBtn.addEventListener("click", function(){
 
         const username = document.getElementById("username").value;
@@ -65,6 +76,52 @@ if (loginBtn){
         .catch(err => console.error("Error:", err));
     });
 }
+
+function signUp(){
+    signupBtn.addEventListener("click", function(){
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const confirmPass = document.getElementById("confirmPassword").value;
+
+        const signupData = {
+            name: name,
+            email: email,
+            username: username,
+            password: password,
+            confirmPass: confirmPass
+        };
+
+        console.log(signupData);
+
+        fetch("/LAMPAPI", {
+            method: "GET",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify(signupData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            
+        })
+        .catch(err => console.error("Error:", err));
+    });
+}
+
+function contacts(){
+    let user = readUser();
+    fetch("http://localhost/LAMPAPI/Contacts.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({user, search})
+    })
+    .then(response => response.json())
+    .then(data => {
+        
+    })
+    .catch(err => console.error("Error:", err));
+}
+
 
 
 //takes in object that represents a user, returned by login response from backend.
