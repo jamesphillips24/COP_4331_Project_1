@@ -35,7 +35,7 @@
 			$nameArr = explode(" ", $dictInputData["name"]);
 			$firstName = $nameArr[0];
 			$lastName = "";
-			if ($count($nameArr) > 1) {
+			if (count($nameArr) > 1) {
 				$lastName = $nameArr[1];
 			}
 			$sqlCMD = $providedConnection->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?)");
