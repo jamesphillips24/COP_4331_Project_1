@@ -1,7 +1,7 @@
 <?php
 	$inputData = decodeJSON();
-	$apiKeyUsername = "masterUserName";
-	$apiKeyPassword = "masterPassword";
+	$apiKeyUsername = "TheBeast";
+	$apiKeyPassword = "WeLoveCOP4331";
 	$databaseName = "COP4331";
 	$connection = new mysqli("localhost", $apiKeyUsername, $apiKeyPassword, $databaseName);
 	attemptSignUp($inputData, $connection);
