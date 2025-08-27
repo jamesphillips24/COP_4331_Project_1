@@ -2,7 +2,7 @@
 	$inputData = decodeJSON();
 	$apiKeyUsername = "masterUserName";
 	$apiKeyPassword = "masterPassword";
-	$databaseName = "COP4331_Project1";
+	$databaseName = "COP4331";
 	$connection = new mysqli("localhost", $apiKeyUsername, $apiKeyPassword, $databaseName);
 	attemptSignUp($inputData, $connection);
 	
@@ -26,21 +26,21 @@
 			$result .= '"' . $rowInfo["UserID"] . '"';
 		}
 		if ($index == 0) {
+			$sqlCMD = $providedConnection->prepare("INSERT INTO PasswordDB (Username, Password) VALUES (?, ?)");
+			$sqlCMD->bind_param("ss", $dictInputData["username"], $dictInputData["password"]);
+			$sqlCMD->execute();
+			$rowHolder = $sqlCMD->get_result();
+			$rowInfo = $rowHolder->fetch_assoc();
+			$userID = $rowInfo["UserID"];
 			$nameArr = explode(" ", $dictInputData["name"]);
 			$firstName = $nameArr[0];
 			$lastName = "";
 			if ($count($nameArr) > 1) {
 				$lastName = $nameArr[1];
 			}
-			$sqlCMD = $providedConnection->prepare("INSERT INTO PasswordDB (firstName, lastName, Username, Password, Email) VALUES (?, ?, ?, ?, ?)");
-			$sqlCMD->bind_param("ss", $firstName, $lastName, $username, $dictInputData["password"], $dictInputData["email"]);
+			$sqlCMD = $providedConnection->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?)");
+			$sqlCMD->bind_param("ss", $firstName, $lastName, "", $dictInputData["email"], $userID);
 			$sqlCMD->execute();
-			$sqlCMD = $providedConnection->prepare("SELECT UserID FROM PasswordDB WHERE Username=?");
-			$sqlCMD->bind_param("ss", $dictInputData["username"]);
-			$sqlCMD->execute();
-			$rowHolder = $sqlCMD->get_result();
-			$rowInfo = $rowHolder->fetch_assoc();
-			$userID = $rowInfo["UserID"];
 			returnWithInfo((int) $userID, $firstName, $lastName, "");
 		}
 		else {

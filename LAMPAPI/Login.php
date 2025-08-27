@@ -2,29 +2,44 @@
 	$inputData = decodeJSON();
 	$apiKeyUsername = "masterUserName";
 	$apiKeyPassword = "masterPassword";
-	$databaseName = "COP4331_Project1";
+	$databaseName = "COP4331";
 	$connection = new mysqli("localhost", $apiKeyUsername, $apiKeyPassword, $databaseName);
 	attemptLogin($inputData["username"], $inputData["password"], $connection);
 	
 	function attemptLogin($username, $password, $providedConnection) {
-		$sqlCMD = $providedConnection->prepare("SELECT UserID, firstName, lastName FROM PasswordDB WHERE Username=? AND Password=?");
+		$sqlCMD = $providedConnection->prepare("SELECT UserID FROM PasswordDB WHERE Username=? AND Password=?");
 		$sqlCMD->bind_param("ss", $username, $password);
 		$sqlCMD->execute();
 		$rowHolder = $sqlCMD->get_result();
 		$index = 0;
-		$result = "";
+		$userID = -1;
 		while($rowInfo = $rowHolder->fetch_assoc()) {
 			if( $index > 0 ) {
-				$result .= ",";
+				break;
 			}
 			$index++;
-			$result .= '"' . $rowInfo["UserID"] . '"';
+			$userID = $rowInfo["UserID"];
 		}
 		if ($index == 0) {
 			returnWithInfo(-1, "", "", "Invalid User/Password combination");
 		}
 		else {
-			returnWithInfo((int) $rowInfo["userID"], $rowInfo["firstName"], $rowInfo["lastName"], "");
+			$sqlCMD = $providedConnection->prepare("SELECT FirstName, LastName FROM Contacts WHERE UserID=?");
+			$sqlCMD->bind_param("ss", $userID);
+			$sqlCMD->execute();
+			$rowHolder = $sqlCMD->get_result();
+			$index = 0;
+			$fName = "";
+			$lName = "";
+			while($rowInfo = $rowHolder->fetch_assoc()) {
+				if( $index > 0 ) {
+					break;
+				}
+				$index++;
+				$fName = $rowInfo["FirstName"];
+				$lName = $rowInfo["LastName"];
+			}
+			returnWithInfo((int) $userID, $fName, $lName, "");
 		}
 		$sqlCMD->close();
 		$providedConnection->close();
