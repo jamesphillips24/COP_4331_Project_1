@@ -12,7 +12,7 @@
 			returnWithInfo(-1, "", "", "Password does not match");
 			return;
 		}
-		$sqlCMD = $providedConnection->prepare("SELECT Username FROM PasswordDB WHERE Username=?");
+		$sqlCMD = $providedConnection->prepare("SELECT Username FROM Users WHERE Username=?");
 		$sqlCMD->bind_param("ss", $dictInputData["username"]);
 		$sqlCMD->execute();
 		$rowHolder = $sqlCMD->get_result();
@@ -26,7 +26,7 @@
 			$result .= '"' . $rowInfo["UserID"] . '"';
 		}
 		if ($index == 0) {
-			$sqlCMD = $providedConnection->prepare("INSERT INTO PasswordDB (Username, Password) VALUES (?, ?)");
+			$sqlCMD = $providedConnection->prepare("INSERT INTO Users (Username, Password) VALUES (?, ?)");
 			$sqlCMD->bind_param("ss", $dictInputData["username"], $dictInputData["password"]);
 			$sqlCMD->execute();
 			$rowHolder = $sqlCMD->get_result();

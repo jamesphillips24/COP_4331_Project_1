@@ -7,7 +7,7 @@
 	attemptLogin($inputData["username"], $inputData["password"], $connection);
 	
 	function attemptLogin($username, $password, $providedConnection) {
-		$sqlCMD = $providedConnection->prepare("SELECT UserID FROM PasswordDB WHERE Username=? AND Password=?");
+		$sqlCMD = $providedConnection->prepare("SELECT UserID FROM Users WHERE Username=? AND Password=?");
 		$sqlCMD->bind_param("ss", $username, $password);
 		$sqlCMD->execute();
 		$rowHolder = $sqlCMD->get_result();
