@@ -29,7 +29,7 @@ function logIn(){
 
         console.log(loginData);
 
-        fetch("http://localhost/LAMPAPI/Login.php", {
+        fetch("/LAMPAPI/Login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(loginData)
@@ -64,7 +64,7 @@ function signUp(){
 
         console.log(signupData);
 
-        fetch("/LAMPAPI", {
+        fetch("/LAMPAPI/SignUp.php", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(signupData)
@@ -80,7 +80,7 @@ function signUp(){
 function contacts(){
     function fetchContacts(search){
         let user = readUser();
-        fetch("http://localhost/LAMPAPI/Contacts.php", {
+        fetch("/LAMPAPI/Contacts.php", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify({userId: user, search: search})
