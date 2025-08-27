@@ -21,10 +21,10 @@
 			$result .= '"' . $rowInfo["UserID"] . '"';
 		}
 		if ($index == 0) {
-			returnWithInfo("", "", "", "Invalid User/Password combination");
+			returnWithInfo(-1, "", "", "Invalid User/Password combination");
 		}
 		else {
-			returnWithInfo($rowInfo["userID"], $rowInfo["firstName"], $rowInfo["lastName"], "");
+			returnWithInfo((int) $rowInfo["userID"], $rowInfo["firstName"], $rowInfo["lastName"], "");
 		}
 		$sqlCMD->close();
 		$providedConnection->close();
