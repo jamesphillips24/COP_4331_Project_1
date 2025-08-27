@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //sends login info to backend and handles response by saving cookie data and sending to contact page
 function logIn(){
-    loginBtn.addEventListener("click", function(){
+    loginBtn.addEventListener("click", function(){6
 
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
