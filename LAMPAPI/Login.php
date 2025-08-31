@@ -7,7 +7,7 @@
 	attemptLogin($inputData["username"], $inputData["password"], $connection);
 	
 	function attemptLogin($username, $password, $providedConnection) {
-		$sqlCMD = $providedConnection->prepare("SELECT UserID FROM Users WHERE Username=? AND Password=?");
+		$sqlCMD = $providedConnection->prepare("SELECT ID FROM Users WHERE Login=? AND Password=?");
 		$sqlCMD->bind_param("ss", $username, $password);
 		$sqlCMD->execute();
 		$rowHolder = $sqlCMD->get_result();
@@ -18,14 +18,14 @@
 				break;
 			}
 			$index++;
-			$userID = $rowInfo["UserID"];
+			$userID = $rowInfo["ID"];
 		}
 		if ($index == 0) {
 			returnWithInfo(-1, "", "", "Invalid User/Password combination");
 		}
 		else {
-			$sqlCMD = $providedConnection->prepare("SELECT FirstName, LastName FROM Contacts WHERE UserID=?");
-			$sqlCMD->bind_param("ss", $userID);
+			$sqlCMD = $providedConnection->prepare("SELECT FirstName, LastName FROM Users WHERE ID=?");
+			$sqlCMD->bind_param("i", $userID);
 			$sqlCMD->execute();
 			$rowHolder = $sqlCMD->get_result();
 			$index = 0;
@@ -52,7 +52,7 @@
 	}
 	
 	function returnWithInfo( $userID, $firstName, $lastName, $error ) {
-		$returnValue = '{"id":' . $userID . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":"' . $error . '}';
+		$returnValue = '{"id":' . $userID . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":"' . $error . '"}';
 		sendResultInfoAsJson( $returnValue );
 	}
 	

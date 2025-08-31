@@ -34,6 +34,14 @@ function logIn(){
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(loginData)
         })
+        
+        /*  debug   
+        .then(response => response.text())
+        .then(data => {
+        console.log("Response:", data);
+        })
+                  */
+        
         .then(response => response.json())
         .then(data => {
             if(data.id <0 ) console.error("Login failed:", data.error);// failure case 
