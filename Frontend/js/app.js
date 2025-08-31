@@ -44,7 +44,10 @@ function logIn(){
         
         .then(response => response.json())
         .then(data => {
-            if(data.id <0 ) console.error("Login failed:", data.error);// failure case 
+            if(data.id <0 ){
+                console.error("Login failed:", data.error);// failure case 
+                document.getElementById("error").style.display = "block";
+            }
             else if (data.id > 0 ){
                 saveUser(data);
                 window.location.href = "contacts.html";

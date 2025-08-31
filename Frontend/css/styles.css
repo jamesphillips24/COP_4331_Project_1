@@ -6,6 +6,12 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+.error{
+    color: red;
+    text-align: center;
+    line-height: 0;
+}
+
 
 
 .signup{
