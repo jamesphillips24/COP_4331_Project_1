@@ -7,45 +7,32 @@
 	attemptSignUp($inputData, $connection);
 	
 	function attemptSignUp($dictInputData, $providedConnection) {
+		$name = $dictInputData["name"];
+		$username = $dictInputData["username"];
+		$password =  $dictInputData["password"];
+
+		#confirm passwords matching
 		if ($dictInputData["password"] != $dictInputData["confirmPass"]) {
-			$providedConnection->close();
 			returnWithInfo(-1, "", "", "Password does not match");
 			return;
 		}
-		$sqlCMD = $providedConnection->prepare("SELECT Username FROM Users WHERE Username=?");
-		$sqlCMD->bind_param("ss", $dictInputData["username"]);
+
+		#confirm username is not already used
+		$sqlCMD = $providedConnection->prepare("SELECT Login FROM Users WHERE Login=?");
+		$sqlCMD->bind_param("s", $dictInputData["username"]);
 		$sqlCMD->execute();
-		$rowHolder = $sqlCMD->get_result();
-		$index = 0;
-		$result = "";
-		while($rowInfo = $rowHolder->fetch_assoc()) {
-			if( $index > 0 ) {
-				$result .= ",";
-			}
-			$index++;
-			$result .= '"' . $rowInfo["UserID"] . '"';
-		}
-		if ($index == 0) {
-			$sqlCMD = $providedConnection->prepare("INSERT INTO Users (Username, Password) VALUES (?, ?)");
-			$sqlCMD->bind_param("ss", $dictInputData["username"], $dictInputData["password"]);
-			$sqlCMD->execute();
-			$rowHolder = $sqlCMD->get_result();
-			$rowInfo = $rowHolder->fetch_assoc();
-			$userID = $rowInfo["UserID"];
-			$nameArr = explode(" ", $dictInputData["name"]);
-			$firstName = $nameArr[0];
-			$lastName = "";
-			if (count($nameArr) > 1) {
-				$lastName = $nameArr[1];
-			}
-			$sqlCMD = $providedConnection->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?)");
-			$sqlCMD->bind_param("ss", $firstName, $lastName, "", $dictInputData["email"], $userID);
-			$sqlCMD->execute();
-			returnWithInfo((int) $userID, $firstName, $lastName, "");
-		}
-		else {
+		$matchingRow = $sqlCMD->get_result()->fetch_assoc();
+		if($matchingRow != null){ #runs if username already exists
 			returnWithInfo(-2, "", "", "Username already exists");
+			return;
 		}
+
+		#add new user data
+		$sqlCMD = $providedConnection->prepare("INSERT INTO Users (Name, Login, Password) VALUES (?, ?, ?)");
+		$sqlCMD->bind_param("sss", $name, $username, $password);
+		$sqlCMD->execute();
+		
+		#close
 		$sqlCMD->close();
 		$providedConnection->close();
 	}

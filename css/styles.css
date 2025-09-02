@@ -6,13 +6,23 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-.error{
+.error{ /* Login wrong username/password */
     color: red;
     text-align: center;
     line-height: 0;
 }
 
+.error1{ /* Signup passwords do not match */
+    color: red;
+    text-align: center;
+    line-height: 0;
+}
 
+.error2{ /* Signup username already in use*/
+    color: red;
+    text-align: center;
+    line-height: 0;
+}
 
 .signup{
     padding: 50px 50px;

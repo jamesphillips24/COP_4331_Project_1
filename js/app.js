@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if(signupBtn){
         signUp();
     }
-    if(contactsTableBody){
+    /*if(contactsTableBody){
         contacts();
-    }
+    }*/
 })
 
 
@@ -60,29 +60,46 @@ function logIn(){
 function signUp(){
     signupBtn.addEventListener("click", function(){
         const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
         const confirmPass = document.getElementById("confirmPassword").value;
 
         const signupData = {
             name: name,
-            email: email,
             username: username,
             password: password,
             confirmPass: confirmPass
         };
 
         console.log(signupData);
+console.log("test1");
 
         fetch("/LAMPAPI/SignUp.php", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(signupData)
         })
+/*debug*//*
+        .then(response => response.text())
+        .then(data => {
+        console.log("Response:", data);
+        })
+*/
         .then(response => response.json())
         .then(data => {
-            //fill in data for signup
+            // -1 means pw doesnt match
+            // -2 means username already used
+            if(data.id == -1){
+                console.error("Passwords do not match:", data.error);// failure case 
+                document.getElementById("error1").style.display = "block";
+                console.log("pw dont match");
+            }
+            if(data.id == -2){
+                console.error("Login failed:", data.error);// failure case 
+                document.getElementById("error2").style.display = "block";
+                console.log("username exists alr")
+            }
+console.log("test2");
         })
         .catch(err => console.error("Error:", err));
     });

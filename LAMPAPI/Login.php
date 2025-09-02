@@ -24,7 +24,7 @@
 			returnWithInfo(-1, "", "", "Invalid User/Password combination");
 		}
 		else {
-			$sqlCMD = $providedConnection->prepare("SELECT FirstName, LastName FROM Users WHERE ID=?");
+			$sqlCMD = $providedConnection->prepare("SELECT Name FROM Users WHERE ID=?");
 			$sqlCMD->bind_param("i", $userID);
 			$sqlCMD->execute();
 			$rowHolder = $sqlCMD->get_result();
@@ -36,10 +36,10 @@
 					break;
 				}
 				$index++;
-				$fName = $rowInfo["FirstName"];
-				$lName = $rowInfo["LastName"];
+				$fName = $rowInfo["Name"];
+				$lName = ""; //$rowInfo["LasName"];
 			}
-			returnWithInfo((int) $userID, $fName, $lName, "");
+			returnWithInfo((int) $userID, $fName, "", "");
 		}
 		$sqlCMD->close();
 		$providedConnection->close();

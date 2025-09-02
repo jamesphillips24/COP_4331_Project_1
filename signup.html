@@ -19,12 +19,15 @@
         <div class = "signup">
             <h2>Sign up</h2>
             <input id = "name" type = "text" placeholder=" Name">
-            <input id = "email" type = "text" placeholder=" Email">
             <input id = "username" type = "text" placeholder=" Username">
             <input id = "password" type = "password" placeholder=" Password">
             <input id = "confirmPassword" type = "password" placeholder=" Confirm Password">
             <button id="signupBtn" class="button-29" role="button">Sign up</button>
             <small>Already a user? <a href = "login.html"> Log in</a></small>
+            
+            <small id = "error1" class = "error1" style = "display: none;">Passwords do not match</small><br>
+            <small id = "error2" class = "error2" style = "display: none; position: absolute; top: 0; width: 100%">Username already in use</small><br>
+
         </div>
         <script src="js/app.js" defer></script>
     </body>
