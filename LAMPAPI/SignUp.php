@@ -11,9 +11,13 @@
 		$username = $dictInputData["username"];
 		$password =  $dictInputData["password"];
 
-		#confirm passwords matching
-		if ($dictInputData["password"] != $dictInputData["confirmPass"]) {
-			returnWithInfo(-1, "", "", "Password does not match");
+		#confirm input is valid
+		if($name == '' || $username == '' || $password == ''){
+			returnWithInfo(-3, "", "", "Please fill in missing boxes");
+			return;
+		}
+		else if(hasSpaces($username) || hasSpaces($password)){
+			returnWithInfo(-4, "", "", "Username and password cannot contain spaces");
 			return;
 		}
 
@@ -27,11 +31,21 @@
 			return;
 		}
 
+		#confirm passwords matching
+		if ($dictInputData["password"] != $dictInputData["confirmPass"]) {
+			returnWithInfo(-1, "", "", "Password does not match");
+			return;
+		}
+
 		#add new user data
 		$sqlCMD = $providedConnection->prepare("INSERT INTO Users (Name, Login, Password) VALUES (?, ?, ?)");
 		$sqlCMD->bind_param("sss", $name, $username, $password);
 		$sqlCMD->execute();
 		
+		#send to json
+		$userID = $providedConnection->insert_id;
+		returnWithInfo($userID, $name, "", "");
+
 		#close
 		$sqlCMD->close();
 		$providedConnection->close();
@@ -44,7 +58,7 @@
 	}
 	
 	function returnWithInfo( $userID, $firstName, $lastName, $error ) {
-		$returnValue = '{"id":' . $userID . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":"' . $error . '}';
+		$returnValue = '{"id":' . $userID . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":"' . $error . '"}';
 		sendResultInfoAsJson( $returnValue );
 	}
 	
@@ -53,4 +67,8 @@
 		echo $obj;
 	}
 
+	//checks if there are spaces in a string
+	function hasSpaces($mystring) {
+		return (strpos($mystring, ' ') !== false);
+	}
 ?>

@@ -12,16 +12,12 @@
     line-height: 0;
 }
 
-.error1{ /* Signup passwords do not match */
+.errorSignup{ /* Signup passwords do not match or username already in use */
     color: red;
     text-align: center;
-    line-height: 0;
-}
-
-.error2{ /* Signup username already in use*/
-    color: red;
-    text-align: center;
-    line-height: 0;
+    line-height: 3;
+    height: 0px;
+    visibility: hidden;
 }
 
 .signup{

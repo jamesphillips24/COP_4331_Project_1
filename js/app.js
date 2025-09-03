@@ -72,13 +72,19 @@ function signUp(){
         };
 
         console.log(signupData);
-console.log("test1");
-
+        
         fetch("/LAMPAPI/SignUp.php", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(signupData)
         })
+
+/* debug: show raw text response *//*
+        .then(r => r.text())
+.then(text => { console.log("RAW RESPONSE:\n", text); })
+.catch(err => console.error("Fetch failed:", err));
+*/
+
 /*debug*//*
         .then(response => response.text())
         .then(data => {
@@ -87,19 +93,37 @@ console.log("test1");
 */
         .then(response => response.json())
         .then(data => {
+            //checks if username or passwords are valid
+            if(data.id == -3){
+                console.error("Please fill in missing boxes");
+                document.getElementById("errorSignup").innerHTML = "Please fill in missing boxes";
+                document.getElementById("errorSignup").style.visibility = "visible";
+            }
+            else if(data.id == -4){
+                console.error("Username and password cannot contain spaces")
+                document.getElementById("errorSignup").innerHTML =  '<span style="line-height:3">Username and password</span><br>' +
+                                                                    '<span style="line-height:0">cannot contain spaces</span>';
+                document.getElementById("errorSignup").style.visibility = "visible";
+            }
+
             // -1 means pw doesnt match
             // -2 means username already used
-            if(data.id == -1){
+            else if(data.id == -1){
                 console.error("Passwords do not match:", data.error);// failure case 
-                document.getElementById("error1").style.display = "block";
-                console.log("pw dont match");
+                document.getElementById("errorSignup").innerHTML = "Passwords do not match";
+                document.getElementById("errorSignup").style.visibility = "visible";
             }
-            if(data.id == -2){
-                console.error("Login failed:", data.error);// failure case 
-                document.getElementById("error2").style.display = "block";
-                console.log("username exists alr")
+            else if(data.id == -2){
+                console.error("Username already in use", data.error);// failure case 
+                document.getElementById("errorSignup").innerHTML = "Username already in use";
+                document.getElementById("errorSignup").style.visibility = "visible";
             }
-console.log("test2");
+
+            //successful signup, automatically logs in and then redirects to contacts page
+            else if (data.id > 0 ){
+                saveUser(data);
+                window.location.href = "contacts.html";
+            }
         })
         .catch(err => console.error("Error:", err));
     });
