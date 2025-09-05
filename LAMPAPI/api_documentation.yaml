@@ -1,0 +1,94 @@
+swagger: '2.0'
+info:
+  description: This is the API documentation for the COP 4331 Small Project
+  version: 1.0.0
+  title: The Small Project
+  contact:
+    email: lo658201+smprojAPI@ucf.edu
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+	
+paths:
+  /Login.php:
+    post:
+      tags:
+      - Users
+      summary: Logs in to the Application
+      operationId: attemptLogin # No idea what this section does
+      description: Logs in to the Application
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: loginItem
+        description: "Error Status Codes\n-1: Invalid User/Password combination\n0<ID: Success"
+        schema:
+          $ref: '#/definitions/Login'
+      responses:
+        200:
+          description: OK
+        404:
+          description: URL Not Found
+        500:
+          description: Server Error
+  /SignUp.php:
+    post:
+      tags:
+      - SignUp
+      summary: Registers a User on the Application
+      operationId: attemptSignUp # No idea what this section does
+      description: Registers a User on the Application app database
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: signupItem
+        description: "Error Status Codes\n-1: Password does not match\n-2: Username already exists\n-3: Please fill in missing boxes\n-4: Username and password cannot contain spaces\n0<ID: Success"
+        schema:
+          $ref: '#/definitions/SignUp'
+      responses:
+        200:
+          description: OK
+        404:
+          description: URL Not Found
+        500:
+          description: Server Error
+definitions:
+  Login:
+    type: object
+    required:
+    - username
+    - password
+    properties:
+      username:
+        type: string
+        example: "BobsTopSecretAccount128"
+      password:
+        type: string
+        example: "secret2148"
+  SignUp:
+    type: object
+    required:
+    - name
+    - username
+    - password
+    properties:
+      name:
+        type: string
+        example: "Bob the Builder"
+      username:
+        type: string
+        example: "BobBuildsBridges"
+      password:
+        type: string
+        example: "bob12pass"
+		
+host: 167.99.125.237
+basePath: /LAMPAPI
+schemes:
+- http
