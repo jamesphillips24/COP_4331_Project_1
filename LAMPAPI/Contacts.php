@@ -66,7 +66,7 @@
 		}
 		else {
 			$sqlCMD = $providedConnection->prepare("SELECT ID FROM Contacts WHERE ID=? AND UserID=?");
-			$sqlCMD->bind_param("i", $dictInputData["InputID"], $dictInputData["id"]);
+			$sqlCMD->bind_param("ii", $dictInputData["InputID"], $dictInputData["id"]);
 			$sqlCMD->execute();
 			$result = $sqlCMD->get_result();
 			if ($result->num_rows == 0)
@@ -90,7 +90,7 @@
 			return;
 		}
 		$sqlCMD = $providedConnection->prepare("UPDATE Contacts SET Phone =? WHERE ID=? AND UserID=?");
-		$sqlCMD->bind_param("si", $dictInputData["InputPhone"], $dictInputData["InputID"],$dictInputData["id"]);
+		$sqlCMD->bind_param("sii", $dictInputData["InputPhone"], $dictInputData["InputID"],$dictInputData["id"]);
 		$sqlCMD->execute();
 		$sqlCMD->close();
 		returnWithInfo($dictInputData["id"], "", "", "");
