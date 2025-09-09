@@ -34,18 +34,18 @@ function logIn(){
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(loginData)
         })
-        
-        /*  debug   
+
+        /*  debug
         .then(response => response.text())
         .then(data => {
         console.log("Response:", data);
         })
                   */
-        
+
         .then(response => response.json())
         .then(data => {
             if(data.id <0 ){
-                console.error("Login failed:", data.error);// failure case 
+                console.error("Login failed:", data.error);// failure case
                 document.getElementById("error").style.display = "block";
             }
             else if (data.id > 0 ){
@@ -72,7 +72,7 @@ function signUp(){
         };
 
         console.log(signupData);
-        
+
         fetch("/LAMPAPI/SignUp.php", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
@@ -109,12 +109,12 @@ function signUp(){
             // -1 means pw doesnt match
             // -2 means username already used
             else if(data.id == -1){
-                console.error("Passwords do not match:", data.error);// failure case 
+                console.error("Passwords do not match:", data.error);// failure case
                 document.getElementById("errorSignup").innerHTML = "Passwords do not match";
                 document.getElementById("errorSignup").style.visibility = "visible";
             }
             else if(data.id == -2){
-                console.error("Username already in use", data.error);// failure case 
+                console.error("Username already in use", data.error);// failure case
                 document.getElementById("errorSignup").innerHTML = "Username already in use";
                 document.getElementById("errorSignup").style.visibility = "visible";
             }
@@ -130,30 +130,89 @@ function signUp(){
 }
 
 function contacts(){
+    const q = document.getElementById("searchInput");
+    const contactsTableBody = document.getElementById("contactsTableBody");
+
+    // fetch contacts with optional search
     function fetchContacts(search){
         let user = readUser();
+        if (!user) return;
+
         fetch("/LAMPAPI/Contacts.php", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify({userId: user, search: search})
+            body: JSON.stringify({
+                mode: 6,                 // search mode in your Contacts.php
+                searchterm: "%" + search + "%",
+                id: user.id
+            })
         })
-        .then(response => response.json())
+        .then(r => r.json())
         .then(data => {
-            // procedure for fetching contacts 
+            console.log("Contacts response:", data);
+
+            contactsTableBody.innerHTML = "";
+
+            if(data.searchResults){
+                data.searchResults.forEach(contact => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${contact.FirstName}</td>
+                        <td>${contact.LastName}</td>
+                        <td>${contact.Email}</td>
+                        <td>${contact.Phone}</td>
+                        <td>
+                            <button class="edit-btn" data-id="${contact.ColumnID}">Edit</button>
+                            <button class="delete-btn" data-id="${contact.ColumnID}">Delete</button>
+                        </td>
+                    `;
+                    contactsTableBody.appendChild(tr);
+                });
+
+                document.querySelectorAll(".delete-btn").forEach(btn => {
+                    btn.addEventListener("click", () => deleteContact(btn.dataset.id));
+                });
+
+                document.querySelectorAll(".edit-btn").forEach(btn => {
+                    btn.addEventListener("click", () => editContact(btn.dataset.id));
+                });
+            }
         })
-        .catch(err => console.error("Error:", err));
+        .catch(err => console.error("Error fetching contacts:", err));
     }
 
-    const q = document.getElementById("searchInput");
-
+    if(q){
+        q.addEventListener("input", () => {
+            fetchContacts(q.value);
+        });
+    }
 
     fetchContacts("");
-
-
-
 }
 
+function deleteContact(contactId){
+    let user = readUser();
+    fetch("/LAMPAPI/Contacts.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({
+            mode: 4,
+            InputID: contactId,
+            id: user.id
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        console.log("Delete result:", data);
+        contacts(); // refresh table
+    })
+    .catch(err => console.error("Error deleting:", err));
+}
 
+// Example editContact placeholder
+function editContact(contactId){
+    alert("Edit contact with ID: " + contactId);
+}
 
 //takes in object that represents a user, returned by login response from backend.
 //is used to create or refresh cookies to represent that this is the logged in user.
