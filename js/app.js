@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //sends login info to backend and handles response by saving cookie data and sending to contact page
 function logIn(){
-    loginBtn.addEventListener("click", function(){6
+    loginBtn.addEventListener("click", function(){
 
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
@@ -129,115 +129,146 @@ function signUp(){
     });
 }
 
-function contacts(){
-    const q = document.getElementById("searchInput");
-    const contactsTableBody = document.getElementById("contactsTableBody");
+function contacts() {
+  const q = document.getElementById("searchInput");
+  const contactsTableBody = document.getElementById("contactsTableBody");
 
-    // fetch contacts with optional search
-    function fetchContacts(search){
-        let user = readUser();
-        if (!user) return;
+  function fetchContacts(search){
+      const user = readUser();
+      if (!user) return;
 
-        fetch("/LAMPAPI/Contacts.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json"},
-            body: JSON.stringify({
-                mode: 6,                 // search mode in your Contacts.php
-                searchterm: "%" + search + "%",
-                id: user.id
-            })
-        })
-        .then(r => r.json())
-        .then(data => {
-            console.log("Contacts response:", data);
+      fetch("/LAMPAPI/Contacts.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+              mode: 6,
+              searchterm: search || "",
+              id: user.id
+          })
+      })
+      .then(r => r.json())
+      .then(data => {
+          let results = data.searchResults || [];
+          if (!Array.isArray(results)) results = Object.values(results);
 
-            contactsTableBody.innerHTML = "";
+          contactsTableBody.innerHTML = "";
 
-            if(data.searchResults){
-                data.searchResults.forEach(contact => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${contact.FirstName}</td>
-                        <td>${contact.LastName}</td>
-                        <td>${contact.Email}</td>
-                        <td>${contact.Phone}</td>
-                        <td>
-                            <button class="edit-btn" data-id="${contact.ColumnID}">Edit</button>
-                            <button class="delete-btn" data-id="${contact.ColumnID}">Delete</button>
-                        </td>
-                    `;
-                    contactsTableBody.appendChild(tr);
-                });
+          if (results.length === 0) {
+              contactsTableBody.innerHTML = '<tr><td colspan="5">No contacts found</td></tr>';
+              return;
+          }
 
-                document.querySelectorAll(".delete-btn").forEach(btn => {
-                    btn.addEventListener("click", () => deleteContact(btn.dataset.id));
-                });
+          results.forEach(contact => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                  <td>${escapeHtml(contact.FirstName || "")}</td>
+                  <td>${escapeHtml(contact.LastName || "")}</td>
+                  <td>${escapeHtml(contact.Email || "")}</td>
+                  <td>${escapeHtml(contact.Phone || "")}</td>
+                  <td class="col-actions">
+                    <button class="edit-btn" data-id="${contact.ColumnID}">Edit</button>
+                    <button class="delete-btn" data-id="${contact.ColumnID}">Delete</button>
+                  </td>
+              `;
+              contactsTableBody.appendChild(tr);
+          });
 
-                document.querySelectorAll(".edit-btn").forEach(btn => {
-                    btn.addEventListener("click", () => editContact(btn.dataset.id));
-                });
-            }
-        })
-        .catch(err => console.error("Error fetching contacts:", err));
-    }
+          contactsTableBody.querySelectorAll(".delete-btn").forEach(btn => {
+              btn.addEventListener("click", () => deleteContact(btn.dataset.id));
+          });
+          contactsTableBody.querySelectorAll(".edit-btn").forEach(btn => {
+              btn.addEventListener("click", () => editContact(btn.dataset.id));
+          });
+      })
+      .catch(err => console.error("Error fetching contacts:", err));
+  }
 
-    if(q){
-        q.addEventListener("input", () => {
-            fetchContacts(q.value);
-        });
-    }
+  fetchContacts("");
 
-    fetchContacts("");
+  if (q) {
+      let timeout;
+      q.addEventListener("input", () => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => fetchContacts(q.value.trim()), 250);
+      });
+  }
+
+  document.getElementById("saveContactBtn").addEventListener("click", () => {
+      const user = readUser();
+      const newContact = {
+          mode: 5,
+          id: user.id,
+          InputFirstName: document.getElementById("contactFirstName").value,
+          InputLastName: document.getElementById("contactLastName").value,
+          InputEmail: document.getElementById("contactEmail").value,
+          InputPhone: document.getElementById("contactPhone").value
+      };
+
+      fetch("/LAMPAPI/Contacts.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newContact)
+      })
+      .then(r => r.json())
+      .then(data => {
+          if (data.id > 0) {
+              document.getElementById("addContactForm").style.display = "none";
+              fetchContacts("");
+          } else {
+              alert("Error: " + data.error);
+          }
+      })
+      .catch(err => console.error("Error:", err));
+  });
 }
 
-function deleteContact(contactId){
-    let user = readUser();
-    fetch("/LAMPAPI/Contacts.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify({
-            mode: 4,
-            InputID: contactId,
-            id: user.id
-        })
-    })
-    .then(r => r.json())
-    .then(data => {
-        console.log("Delete result:", data);
-        contacts(); // refresh table
-    })
-    .catch(err => console.error("Error deleting:", err));
-}
+  function deleteContact(contactId){
+      const user = readUser();
+      if (!user) return;
+      fetch("/LAMPAPI/Contacts.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json"},
+          body: JSON.stringify({
+              mode: 4,
+              InputID: Number(contactId),
+              id: user.id
+          })
+      })
+      .then(r => r.json().catch(() => null))
+      .then(data => {
+          const contactsTableBody = document.getElementById("contactsTableBody");
+          if (contactsTableBody) {
+              contacts();
+          }
+      })
+      .catch(err => console.error("Error deleting:", err));
+  }
 
-// Example editContact placeholder
-function editContact(contactId){
-    alert("Edit contact with ID: " + contactId);
-}
+  function editContact(contactId){
+      alert("Edit contact with ID: " + contactId + " — implement modal or edit form here.");
+  }
 
-//takes in object that represents a user, returned by login response from backend.
-//is used to create or refresh cookies to represent that this is the logged in user.
-//called on successful login, creating cookie, called after all CRUD operations to refresh the timer. lasts 20 minutes.
-function saveUser(data){
-    const user = {
-        id: data.id,
-        firstName: data.firstName,
-        lastName: data.lastName
-    };
+  function saveUser(data){
+      const user = {
+          id: data.id,
+          firstName: data.firstName,
+          lastName: data.lastName
+      };
+      const userString = JSON.stringify(user);
+      const encoded = encodeURIComponent(userString);
+      const expires = new Date(Date.now() + 20*60*1000).toUTCString();
+      document.cookie = `user=${encoded}; expires=${expires}; path=/`;
+  }
 
-    const userString = JSON.stringify(user);
-    const encoded = encodeURIComponent(userString);
-    const expires = new Date(Date.now() + 20*60*1000).toUTCString();
-    document.cookie = `user=${encoded}; expires=${expires}; path=/`;
-}
-
-//checks to see current cookie data. if not found, send to login screen to relog. if found, returns ID #
-function readUser(){
-    const c = document.cookie.split("; ").find(c => c.startsWith("user="));
-    if(!c) {
-        window.location.href = "login.html";
-        return null;
-    }
-    else try{
-        return JSON.parse(decodeURIComponent(c.split("=")[1]));
-    } catch { return null;}
-}
+  function readUser(){
+      const c = document.cookie.split("; ").find(c => c.startsWith("user="));
+      if(!c) {
+          window.location.href = "login.html";
+          return null;
+      }
+      try {
+          return JSON.parse(decodeURIComponent(c.split("=")[1]));
+      } catch {
+          return null;
+      }
+  }

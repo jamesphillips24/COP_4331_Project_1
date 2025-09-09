@@ -1,4 +1,8 @@
 <?php
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+
 	$inData = decodeJson();
 	$apiKeyUsername = "TheBeast";
 	$apiKeyPassword = "WeLoveCOP4331";
@@ -179,29 +183,16 @@
 		$sqlCMD->bind_param("sssi", $term, $term, $term, $dictInputData["id"]);
 		$sqlCMD->execute();
 		$result = $sqlCMD->get_result();
-		$jsVal = '{
-			"error": "",
-			"searchResults": {
-				';
-		$index = 0;
-		while ( $row = $result->fetch_assoc()) {
-			if ($index != 0) {
-				$jsVal .= ',
-				';
-			}
-			$jsVal .= '{ "ColumnID": ' . $row["ID"] .
-					', "FirstName": "' . $row["FirstName"] . '"' .
-					', "LastName": "' . $row["LastName"] . '"' .
-					', "Email": "' . $row["Email"] . '"' .
-					', "Phone": "' . $row["Phone"] . '"' .
-					', "UserID": ' . $row["UserID"] . ' }';
-			$index += 1;
+		$results = array();
+		while ($row = $result->fetch_assoc()) {
+			$results[] = $row;
 		}
-		$jsVal .= '
-		}
-		}';
 		$sqlCMD->close();
-		sendResultInfoAsJson($jsVal);
+
+		sendResultInfoAsJson(json_encode(array(
+			"error" => "",
+			"searchResults" => $results
+		)));
 	}
 
 
@@ -238,6 +229,10 @@
 	}
 	function hasAtSymbol($myString) {
 		return (strpos($myString, '@') !== false);
+	}
+
+	function NumericOnly($str) {
+		return ctype_digit($str);
 	}
 
 ?>
