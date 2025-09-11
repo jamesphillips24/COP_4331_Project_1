@@ -87,6 +87,21 @@
   border-bottom: 1px solid #1f2937;
 }
 
+/*contactBox when adding/editing contacts*/
+.contactBox{
+  z-index: 15;
+  background:lightblue;
+  padding: 20px;
+  line-height: 2;
+  border-radius: 14px;
+
+  /*centered*/
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /*        */
+}
 
 /* Card shell */
 .card {

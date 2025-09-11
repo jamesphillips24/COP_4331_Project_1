@@ -21,6 +21,7 @@
 
     <button id="addContactBtn">Add Contact</button>
 
+<!--
     <div id="addContactForm" style="display:none; margin-top:1rem;">
       <input type="text" id="contactFirstName" placeholder="First Name">
       <input type="text" id="contactLastName" placeholder="Last Name">
@@ -29,6 +30,7 @@
       <button id="saveContactBtn">Save</button>
       <button id="cancelContactBtn">Cancel</button>
     </div>
+-->
 
     <div class="table-wrap" style="margin-top:1rem;">
       <table class="contacts" aria-label="Contacts table">
@@ -45,6 +47,16 @@
         </tbody>
       </table>
     </div>
+  </div>
+
+  <div class="contactBox" id="addContactForm" style="display:none">
+    <h2 class="contactBoxText">Add Contact</h2>
+    <input type="text" id="contactFirstName" placeholder="First Name"><br>
+    <input type="text" id="contactLastName" placeholder="Last Name"><br>
+    <input type="text" id="contactEmail" placeholder="Email"><br>
+    <input type="text" id="contactPhone" placeholder="Phone"><br>
+    <button id="saveContactBtn">Save</button>
+    <button id="cancelContactBtn">Cancel</button>
   </div>
 
   <script src="js/app.js"></script>
