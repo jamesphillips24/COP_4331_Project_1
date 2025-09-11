@@ -167,8 +167,8 @@ function contacts() {
                   <td>${contact.Email}</td>
                   <td>${contact.Phone}</td>
                   <td class="col-actions">
-                    <button class="edit-btn" data-id="${contact.ColumnID}">Edit</button>
-                    <button class="delete-btn" data-id="${contact.ColumnID}">Delete</button>
+                    <button class="edit-btn" data-id="${contact.ID}">Edit</button>
+                    <button class="delete-btn" data-id="${contact.ID}">Delete</button>
                   </td>
               `;
               contactsTableBody.appendChild(tr);
@@ -193,13 +193,17 @@ function contacts() {
           timeout = setTimeout(() => fetchContacts(q.value.trim()), 250);
       });
   }
-
+//adding
     document.getElementById("addContactBtn").addEventListener("click", () => {
         document.getElementById("addContactForm").style.display = "block";
     });
 
     document.getElementById("cancelContactBtn").addEventListener("click", () => {
         document.getElementById("addContactForm").style.display = "none";
+    });
+//editing
+    document.getElementById("cancelEditContactBtn").addEventListener("click", () => {
+        document.getElementById("editContactForm").style.display = "none";
     });
 
 
@@ -256,9 +260,28 @@ function contacts() {
       .catch(err => console.error("Error deleting:", err));
   }
 
-  function editContact(contactId){
-      alert("Edit contact with ID: " + contactId + " — implement modal or edit form here.");
-  }
+function editContact(contactId){
+    const user = readUser();
+    const newContact = {
+        mode: 0,
+        userId: user.id,
+        contactId: contactId
+    }
+    fetch("/LAMPAPI/Contacts.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newContact)
+    })
+    .then(r => r.json())
+    .then(data => {
+        console.log(data),
+        document.getElementById("editContactFirstName").value = data["FirstName"],
+        document.getElementById("editContactLastName").value = data["LastName"],
+        document.getElementById("editContactPhone").value = data["Phone"],
+        document.getElementById("editContactEmail").value = data["Email"]
+    })
+    document.getElementById("editContactForm").style.display = "block";
+}
 
   function saveUser(data){
       const user = {

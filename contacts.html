@@ -49,14 +49,24 @@
     </div>
   </div>
 
-  <div class="contactBox" id="addContactForm" style="display:none">
-    <h2 class="contactBoxText">Add Contact</h2>
+  <div class="addContactBox" id="addContactForm" style="display:none">
+    <h2 id="contactBoxText" class="contactBoxText">Add Contact</h2>
     <input type="text" id="contactFirstName" placeholder="First Name"><br>
     <input type="text" id="contactLastName" placeholder="Last Name"><br>
     <input type="text" id="contactEmail" placeholder="Email"><br>
     <input type="text" id="contactPhone" placeholder="Phone"><br>
     <button id="saveContactBtn">Save</button>
     <button id="cancelContactBtn">Cancel</button>
+  </div>
+
+  <div class="editContactBox" id="editContactForm" style="display:none">
+    <h2 id="editContactBoxText" class="editContactBoxText">Edit Contact</h2>
+    <input type="text" id="editContactFirstName" placeholder="First Name"><br>
+    <input type="text" id="editContactLastName" placeholder="Last Name"><br>
+    <input type="text" id="editContactEmail" placeholder="Email"><br>
+    <input type="text" id="editContactPhone" placeholder="Phone"><br>
+    <button id="saveEditContactBtn">Save</button>
+    <button id="cancelEditContactBtn">Cancel</button>
   </div>
 
   <script src="js/app.js"></script>

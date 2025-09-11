@@ -94,6 +94,30 @@
 	}
 
 	function editContact($dictInputData, $providedConnection){
+		//PROMPTS!!! for contact-edit
+		$contactId = $dictInputData["contactID"];
+		$userId = $dictInputData["userID"];
+
+		$sqlCMD = $providedConnection->prepare("SELECT 	FirstName, 
+														LastName,
+														Phone,
+														Email
+												FROM Contacts 
+												WHERE ID = ? and UserID=?");
+		$sqlCMD->bind_param("ii", $contactId,$userId);
+		$sqlCMD->execute();
+		$contactInfo = $sqlCMD->get_result()->fetch_assoc();
+		sendResultInfoAsJson(json_encode([
+			"contactId" => $contactId,
+			"FirstName" => $contactInfo["FirstName"],
+			"LastName" 	=> $contactInfo["LastName"],
+			"Phone" 	=> $contactInfo["Phone"],
+			"Email" 	=> $contactInfo["Email"],
+		]));
+		$sqlCMD->close();
+	}
+
+	function saveEditContact($dictInputData, $providedConnection){
 		//checks for validity of email and phone entries
 		if (hasSpaces($dictInputData["InputEmail"]) || hasPlus($dictInputData["InputEmail"])) {
 			returnWithInfo(-7, "", "", "Emails cannot contain spaces or aliases");
@@ -104,13 +128,16 @@
 			returnWithInfo(-8, "", "", "Invalid email provided. Please use the traditional yourIdentifier@domainHere");
 			return;
 		}
-
 		if (strlen($dictInputData["InputPhone"]) < 6 || strlen($dictInputData["InputPhone"]) > 15) {
 			returnWithInfo(-10, "", "", "Invalid Phone Number. By E.164, International Phone Numbers must have 6 to 15 digits (area+full country code (zeros included) included).");
 			return;
 		}
+		elseif(!NumericOnly($dictInputData["InputPhone"])) {
+			returnWithInfo(-11, "", "", "Enter Phone Numbers with ONLY Integer Values.");
+			return;
+		}
 
-		//sql
+		//sql commands
 		$sqlCMD = $providedConnection->prepare("UPDATE Contacts 
 												SET FirstName =?, 
 													LastName =?, 
@@ -126,8 +153,9 @@
 										$dictInputData["InputID"],
 										$dictInputData["id"]);
 		$sqlCMD->execute();
+		$refID = $providedConnection->insert_id();
 		$sqlCMD->close();
-		returnWithInfo($dictInputData["id"], "", "", ""); //???
+		returnWithInfo($refID, "", "", "");
 		return;
 	}
 
