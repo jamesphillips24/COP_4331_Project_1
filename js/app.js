@@ -159,12 +159,13 @@ function contacts() {
           }
 
           results.forEach(contact => {
+              console.log("Contact object:", contact);      //DEBUG
               const tr = document.createElement("tr");
               tr.innerHTML = `
-                  <td>${escapeHtml(contact.FirstName || "")}</td>
-                  <td>${escapeHtml(contact.LastName || "")}</td>
-                  <td>${escapeHtml(contact.Email || "")}</td>
-                  <td>${escapeHtml(contact.Phone || "")}</td>
+                  <td>${contact.FirstName}</td>
+                  <td>${contact.LastName}</td>
+                  <td>${contact.Email}</td>
+                  <td>${contact.Phone}</td>
                   <td class="col-actions">
                     <button class="edit-btn" data-id="${contact.ColumnID}">Edit</button>
                     <button class="delete-btn" data-id="${contact.ColumnID}">Delete</button>
@@ -193,6 +194,15 @@ function contacts() {
       });
   }
 
+    document.getElementById("addContactBtn").addEventListener("click", () => {
+        document.getElementById("addContactForm").style.display = "block";
+    });
+
+    document.getElementById("cancelContactBtn").addEventListener("click", () => {
+        document.getElementById("addContactForm").style.display = "none";
+    });
+
+
   document.getElementById("saveContactBtn").addEventListener("click", () => {
       const user = readUser();
       const newContact = {
@@ -214,7 +224,9 @@ function contacts() {
           if (data.id > 0) {
               document.getElementById("addContactForm").style.display = "none";
               fetchContacts("");
+              console.log("Here")
           } else {
+            console.log("Bad")
               alert("Error: " + data.error);
           }
       })
@@ -244,49 +256,9 @@ function contacts() {
       .catch(err => console.error("Error deleting:", err));
   }
 
-//prompts contact edit
-function editContact(contactId){
-    //alert("Edit contact with ID: " + contactId + " — implement modal or edit form here.");
-    const user = readUser();
-    if (!user) return;
-
-    //change text to textboxes
-    const editBtn = document.querySelector(`.edit-btn[data-id="${contactId}"]`);
-    const row = editBtn.closest('tr');
-
-    //show buttons "save" and "cancel"
-
-}
-
-//save contact edit changes
-//NOTE: STILL UNDER WORK
-function saveContact(data){
-    const newContact = {
-            mode: 0,
-            //id: user.id,
-            InputFirstName: document.getElementById("editFirstName").value,
-            InputLastName: document.getElementById("editLastName").value,
-            InputEmail: document.getElementById("editEmail").value,
-            InputPhone: document.getElementById("editPhone").value
-    }
-
-    //run endpoint
-    fetch("/LAMPAPI/Contacts.php", {
-        body: JSON.stringify({
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newContact)
-        })
-    })
-    .then(r => r.json().catch(() => null))
-    .then(data => {
-        const contactsTableBody = document.getElementById("contactsTableBody");
-        if (contactsTableBody) {
-            contacts();
-        }
-    })
-    .catch(err => console.error("Error editting:", err));
-}
+  function editContact(contactId){
+      alert("Edit contact with ID: " + contactId + " — implement modal or edit form here.");
+  }
 
   function saveUser(data){
       const user = {
