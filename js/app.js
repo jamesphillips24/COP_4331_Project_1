@@ -244,9 +244,49 @@ function contacts() {
       .catch(err => console.error("Error deleting:", err));
   }
 
-  function editContact(contactId){
-      alert("Edit contact with ID: " + contactId + " — implement modal or edit form here.");
-  }
+//prompts contact edit
+function editContact(contactId){
+    //alert("Edit contact with ID: " + contactId + " — implement modal or edit form here.");
+    const user = readUser();
+    if (!user) return;
+
+    //change text to textboxes
+    const editBtn = document.querySelector(`.edit-btn[data-id="${contactId}"]`);
+    const row = editBtn.closest('tr');
+
+    //show buttons "save" and "cancel"
+
+}
+
+//save contact edit changes
+//NOTE: STILL UNDER WORK
+function saveContact(data){
+    const newContact = {
+            mode: 0,
+            //id: user.id,
+            InputFirstName: document.getElementById("editFirstName").value,
+            InputLastName: document.getElementById("editLastName").value,
+            InputEmail: document.getElementById("editEmail").value,
+            InputPhone: document.getElementById("editPhone").value
+    }
+
+    //run endpoint
+    fetch("/LAMPAPI/Contacts.php", {
+        body: JSON.stringify({
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newContact)
+        })
+    })
+    .then(r => r.json().catch(() => null))
+    .then(data => {
+        const contactsTableBody = document.getElementById("contactsTableBody");
+        if (contactsTableBody) {
+            contacts();
+        }
+    })
+    .catch(err => console.error("Error editting:", err));
+}
 
   function saveUser(data){
       const user = {

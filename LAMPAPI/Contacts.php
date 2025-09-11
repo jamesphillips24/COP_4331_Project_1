@@ -16,6 +16,7 @@
 	function selectMode($dictInputData, $providedConnection)
 	{
 		switch ($dictInputData["mode"]) {
+			/*
 			case 0:
 				changeFirstName($dictInputData, $providedConnection);
 				break;
@@ -27,6 +28,10 @@
 				break;
 			case 3:
 				changePhoneNumber($dictInputData, $providedConnection);
+				break;
+			*/
+			case 0:
+				editContact($dictInputData, $providedConnection);
 				break;
 			case 4:
 				deleteContact($dictInputData, $providedConnection);
@@ -86,6 +91,44 @@
 			returnWithInfo($dictInputData["id"], "", "", "");
 			return;
 		}
+	}
+
+	function editContact($dictInputData, $providedConnection){
+		//checks for validity of email and phone entries
+		if (hasSpaces($dictInputData["InputEmail"]) || hasPlus($dictInputData["InputEmail"])) {
+			returnWithInfo(-7, "", "", "Emails cannot contain spaces or aliases");
+			return;
+		}
+		$emailArr = explode("@", $dictInputData["InputEmail"]);
+		if (count($emailArr) != 2) {
+			returnWithInfo(-8, "", "", "Invalid email provided. Please use the traditional yourIdentifier@domainHere");
+			return;
+		}
+
+		if (strlen($dictInputData["InputPhone"]) < 6 || strlen($dictInputData["InputPhone"]) > 15) {
+			returnWithInfo(-10, "", "", "Invalid Phone Number. By E.164, International Phone Numbers must have 6 to 15 digits (area+full country code (zeros included) included).");
+			return;
+		}
+
+		//sql
+		$sqlCMD = $providedConnection->prepare("UPDATE Contacts 
+												SET FirstName =?, 
+													LastName =?, 
+													Email =?, 
+													Phone =?, 
+												WHERE ID=? 
+												AND UserID=?");
+		$sqlCMD->bind_param("sssii", 	$dictInputData["InputFirstName"], 
+										$dictInputData["InputLName"], 
+										$dictInputData["InputEmail"], 
+										$dictInputData["InputPhone"],
+
+										$dictInputData["InputID"],
+										$dictInputData["id"]);
+		$sqlCMD->execute();
+		$sqlCMD->close();
+		returnWithInfo($dictInputData["id"], "", "", ""); //???
+		return;
 	}
 
 	function changePhoneNumber($dictInputData, $providedConnection) {
