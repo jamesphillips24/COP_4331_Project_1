@@ -95,8 +95,8 @@
 
 	function editContact($dictInputData, $providedConnection){
 		//PROMPTS!!! for contact-edit
-		$contactId = $dictInputData["contactID"];
-		$userId = $dictInputData["userID"];
+		$contactID = $dictInputData["contactID"];
+		$userID = $dictInputData["userID"];
 
 		$sqlCMD = $providedConnection->prepare("SELECT 	FirstName, 
 														LastName,
@@ -104,11 +104,11 @@
 														Email
 												FROM Contacts 
 												WHERE ID = ? and UserID=?");
-		$sqlCMD->bind_param("ii", $contactId,$userId);
+		$sqlCMD->bind_param("ii", $contactID,$userID);
 		$sqlCMD->execute();
 		$contactInfo = $sqlCMD->get_result()->fetch_assoc();
 		sendResultInfoAsJson(json_encode([
-			"contactId" => $contactId,
+			"contactId" => $contactID,
 			"FirstName" => $contactInfo["FirstName"],
 			"LastName" 	=> $contactInfo["LastName"],
 			"Phone" 	=> $contactInfo["Phone"],
