@@ -281,6 +281,7 @@ function editContact(contactId){
         document.getElementById("editContactEmail").value = data["Email"]
     })
     document.getElementById("editContactForm").style.display = "block";
+    window.location.href = "contacts.html";
 }
 
   function saveUser(data){
