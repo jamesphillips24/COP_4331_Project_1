@@ -264,9 +264,10 @@ function editContact(contactId){
     const user = readUser();
     const newContact = {
         mode: 0,
-        userId: user.id,
-        contactId: contactId
+        userID: user.id,
+        contactID: contactId
     }
+    console.log(newContact); //
     fetch("/LAMPAPI/Contacts.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
