@@ -239,27 +239,34 @@ function contacts() {
   saveEditContact_btn.addEventListener(
      "click", () => saveEditContact(saveEditContact_btn.getAttribute("data-id"))
   );
-  function deleteContact(contactId){
-      const user = readUser();
-      if (!user) return;
-      fetch("/LAMPAPI/Contacts.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json"},
-          body: JSON.stringify({
-              mode: 4,
-              InputID: Number(contactId),
-              id: user.id
-          })
-      })
-      .then(r => r.json().catch(() => null))
-      .then(data => {
-          const contactsTableBody = document.getElementById("contactsTableBody");
-          if (contactsTableBody) {
-              contacts();
-          }
-      })
-      .catch(err => console.error("Error deleting:", err));
-  }
+
+function deleteContact(contactId){
+    const user = readUser();
+    if (!user) return;
+
+    if (!confirm("Are you sure you want to delete this contact?")) {
+        return;
+    }
+
+    fetch("/LAMPAPI/Contacts.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({
+            mode: 4,
+            InputID: Number(contactId),
+            id: user.id
+        })
+    })
+    .then(r => r.json().catch(() => null))
+    .then(data => {
+        const contactsTableBody = document.getElementById("contactsTableBody");
+        if (contactsTableBody) {
+            contacts(); // Refresh contacts
+        }
+    })
+    .catch(err => console.error("Error deleting:", err));
+}
+
 
 function editContact(contactId){
     document.getElementById("saveEditContactBtn").setAttribute("data-id", contactId);
