@@ -33,6 +33,9 @@
 			case 0:
 				editContact($dictInputData, $providedConnection);
 				break;
+			case 1:
+				saveEditContact($dictInputData, $providedConnection);
+				break;
 			case 4:
 				deleteContact($dictInputData, $providedConnection);
 				break;
@@ -139,23 +142,22 @@
 
 		//sql commands
 		$sqlCMD = $providedConnection->prepare("UPDATE Contacts 
-												SET FirstName =?, 
-													LastName =?, 
-													Email =?, 
-													Phone =?, 
-												WHERE ID=? 
-												AND UserID=?");
-		$sqlCMD->bind_param("sssii", 	$dictInputData["InputFirstName"], 
-										$dictInputData["InputLName"], 
+												SET FirstName = ?, 
+													LastName = ?, 
+													Email = ?, 
+													Phone = ?
+												WHERE ID = ? 
+												AND UserID = ?;");
+		$sqlCMD->bind_param("ssssii", 	$dictInputData["InputFirstName"], 
+										$dictInputData["InputLastName"], 
 										$dictInputData["InputEmail"], 
 										$dictInputData["InputPhone"],
 
-										$dictInputData["InputID"],
-										$dictInputData["id"]);
+										$dictInputData["contactID"],
+										$dictInputData["userID"]);
 		$sqlCMD->execute();
-		$refID = $providedConnection->insert_id();
 		$sqlCMD->close();
-		returnWithInfo($refID, "", "", "");
+		returnWithInfo(0, "", "", "");
 		return;
 	}
 
@@ -242,7 +244,7 @@
 		$sqlCMD = $providedConnection->prepare("INSERT INTO Contacts (FirstName, LastName, Email, Phone, UserID) VALUES (?, ?, ?, ?, ?)");
 		$sqlCMD->bind_param("ssssi", $dictInputData["InputFirstName"], $dictInputData["InputLastName"], $dictInputData["InputEmail"], $dictInputData["InputPhone"], $dictInputData["id"]);
 		$sqlCMD->execute();
-		$refID = $providedConnection->insert_id();
+		$refID = $providedConnection->insert_id;
 		$sqlCMD->close();
 		returnWithInfo($refID, "", "", "");
 	}

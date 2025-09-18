@@ -228,16 +228,17 @@ function contacts() {
           if (data.id > 0) {
               document.getElementById("addContactForm").style.display = "none";
               fetchContacts("");
-              console.log("Here")
           } else {
-            console.log("Bad")
               alert("Error: " + data.error);
           }
       })
       .catch(err => console.error("Error:", err));
   });
-}
 
+  saveEditContact_btn = document.getElementById("saveEditContactBtn");
+  saveEditContact_btn.addEventListener(
+     "click", () => saveEditContact(saveEditContact_btn.getAttribute("data-id"))
+  );
   function deleteContact(contactId){
       const user = readUser();
       if (!user) return;
@@ -261,13 +262,14 @@ function contacts() {
   }
 
 function editContact(contactId){
+    document.getElementById("saveEditContactBtn").setAttribute("data-id", contactId);
+
     const user = readUser();
     const newContact = {
         mode: 0,
         userID: user.id,
         contactID: contactId
     }
-    console.log(newContact); //
     fetch("/LAMPAPI/Contacts.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -275,16 +277,47 @@ function editContact(contactId){
     })
     .then(r => r.json())
     .then(data => {
-        console.log(data),
         document.getElementById("editContactFirstName").value = data["FirstName"],
         document.getElementById("editContactLastName").value = data["LastName"],
         document.getElementById("editContactPhone").value = data["Phone"],
         document.getElementById("editContactEmail").value = data["Email"]
     })
     document.getElementById("editContactForm").style.display = "block";
-    window.location.href = "contacts.html";
+    //window.location.href = "contacts.html";
 }
 
+function saveEditContact(contactID){
+    const user = readUser();
+    const newContact = {
+        mode: 1,
+        userID: user.id,
+        contactID: contactID,
+        InputFirstName: document.getElementById("editContactFirstName").value,
+        InputLastName: document.getElementById("editContactLastName").value,
+        InputEmail: document.getElementById("editContactEmail").value,
+        InputPhone: document.getElementById("editContactPhone").value
+    };
+    fetch("/LAMPAPI/Contacts.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newContact)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.id < 0){
+            alert("Error: " + data.error);
+        }
+        else{
+            document.getElementById("editContactForm").style.display = "none";
+            fetchContacts("");
+//TODO: refresh?
+        }
+    })
+    .catch(err => console.error("Error:", err));
+  }
+}
+
+  
   function saveUser(data){
       const user = {
           id: data.id,
