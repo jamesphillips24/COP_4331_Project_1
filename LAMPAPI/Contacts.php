@@ -271,8 +271,8 @@
 	function searchForContact($dictInputData, $providedConnection)
 	{
 		$term = "%" . $dictInputData["searchterm"] . "%";
-		$sqlCMD = $providedConnection->prepare("SELECT * FROM Contacts WHERE (FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ?) AND UserID=?");
-		$sqlCMD->bind_param("sssi", $term, $term, $term, $dictInputData["id"]);
+		$sqlCMD = $providedConnection->prepare("SELECT * FROM Contacts WHERE (FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR Phone LIKE ?) AND UserID=?");
+		$sqlCMD->bind_param("ssssi", $term, $term, $term, $term, $dictInputData["id"]);
 		$sqlCMD->execute();
 		$result = $sqlCMD->get_result();
 		$results = array();
