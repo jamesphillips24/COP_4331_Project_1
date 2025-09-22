@@ -130,6 +130,8 @@ function signUp(){
 }
 
 function contacts() {
+    document.getElementById("logout-btn").addEventListener("click", () => logout()); 
+
   const q = document.getElementById("searchInput");
   const contactsTableBody = document.getElementById("contactsTableBody");
 
@@ -333,16 +335,14 @@ function saveEditContact(contactID){
     .catch(err => console.error("Error:", err));
   }
 }
-
-document.getElementById("logout-btn").addEventListener("click", () => logout()); 
-function logout(){
-    if (!confirm("Are you sure you want to logout?")) {
-        return;
+      function logout(){
+        if (!confirm("Are you sure you want to logout?")) {
+            return;
+        }
+        document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Delete cookie
+        window.location.href = "login.html";
     }
-    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Delete cookie
-    window.location.href = "login.html";
-}
-  
+    
   function saveUser(data){
       const user = {
           id: data.id,
