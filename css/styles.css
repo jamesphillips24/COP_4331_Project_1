@@ -1,3 +1,12 @@
+body{
+  font-family: 'Trebuchet MS', sans-serif;
+}
+.logout-btn{
+  position: fixed;
+  top:42px;
+  right: 15px;
+  z-index: 20;
+}
 
 .login{
     padding: 20px;
@@ -15,6 +24,9 @@
 .errorSignup{ /* Signup passwords do not match or username already in use */
     color: red;
     text-align: center;
+    display: flex;            /**/
+    justify-content: center;  /**/
+    align-items: center;      /**/
     line-height: 3;
     height: 0px;
     visibility: hidden;
@@ -90,11 +102,11 @@
 /*contactBox when adding/editing contacts*/
 .addContactBox,.editContactBox{
   z-index: 15;
-  background:lightblue;
-  padding: 20px;
+  background:linear-gradient(to bottom, lightblue, rgb(196, 209, 214));;
+  padding: 40px;
   line-height: 2;
   border-radius: 14px;
-
+  border: 2px solid black;
   /*centered*/
   position: fixed;
   top: 50%;
@@ -149,10 +161,10 @@ table.contacts {
 }
 
 /* Column sizing (tweak as needed) */
-.col-first   { width: 15%; }
-.col-last  { width: 15%; }
-.col-email  { width: 25%; }
-.col-phone   { width: 8%; }
+.col-first   { width: 15%; text-align: left;}
+.col-last  { width: 15%; text-align: left;}
+.col-email  { width: 25%; text-align: left;}
+.col-phone   { width: 8%; text-align: left;}
 .col-actions{ width: 10%; text-align: right; }
 
 
@@ -182,3 +194,28 @@ table.contacts {
 }
 
 
+button{
+    background-color: rgb(218, 218, 218);
+    color: black;
+    padding: 0.5rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease; /* color transition when hovering mouse*/
+    border-radius: 5px;
+    border-color: lightgray
+}
+button:hover{
+    background-color: rgb(241, 241, 241);
+}
+
+.red-btn:hover{
+  background-color: rgb(255, 160, 160);
+}
+
+.yellow-btn:hover{
+  background-color: rgb(255, 255, 186);
+}
+
+.green-btn:hover{
+  background-color: rgb(211, 255, 211);
+}

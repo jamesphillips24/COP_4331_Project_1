@@ -168,7 +168,7 @@ function contacts() {
                   <td>${contact.Phone}</td>
                   <td class="col-actions">
                     <button class="edit-btn" data-id="${contact.ID}">Edit</button>
-                    <button class="delete-btn" data-id="${contact.ID}">Delete</button>
+                    <button class="delete-btn red-btn" data-id="${contact.ID}">Delete</button>
                   </td>
               `;
               contactsTableBody.appendChild(tr);
@@ -196,6 +196,10 @@ function contacts() {
 //adding
     document.getElementById("addContactBtn").addEventListener("click", () => {
         document.getElementById("addContactForm").style.display = "block";
+        document.getElementById("contactFirstName").value = "";
+        document.getElementById("contactLastName").value = "";
+        document.getElementById("contactEmail").value = "";
+        document.getElementById("contactPhone").value = "";
     });
 
     document.getElementById("cancelContactBtn").addEventListener("click", () => {
@@ -206,6 +210,8 @@ function contacts() {
         document.getElementById("editContactForm").style.display = "none";
     });
 
+            document.getElementById("addContactError").style.visibility = "hidden";
+            document.getElementById("editContactError").style.visibility = "hidden";
 
   document.getElementById("saveContactBtn").addEventListener("click", () => {
       const user = readUser();
@@ -226,10 +232,12 @@ function contacts() {
       .then(r => r.json())
       .then(data => {
           if (data.id > 0) {
+            document.getElementById("addContactError").style.visibility = "hidden";
               document.getElementById("addContactForm").style.display = "none";
               fetchContacts("");
           } else {
-              alert("Error: " + data.error);
+            document.getElementById("addContactError").innerHTML = data.error;
+            document.getElementById("addContactError").style.visibility = "visible";
           }
       })
       .catch(err => console.error("Error:", err));
@@ -312,9 +320,11 @@ function saveEditContact(contactID){
     .then(r => r.json())
     .then(data => {
         if(data.id < 0){
-            alert("Error: " + data.error);
+            document.getElementById("editContactError").innerHTML = data.error;
+            document.getElementById("editContactError").style.visibility = "visible";
         }
         else{
+            document.getElementById("editContactError").style.visibility = "hidden";
             document.getElementById("editContactForm").style.display = "none";
             fetchContacts("");
 //TODO: refresh?
@@ -324,6 +334,14 @@ function saveEditContact(contactID){
   }
 }
 
+document.getElementById("logout-btn").addEventListener("click", () => logout()); 
+function logout(){
+    if (!confirm("Are you sure you want to logout?")) {
+        return;
+    }
+    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Delete cookie
+    window.location.href = "login.html";
+}
   
   function saveUser(data){
       const user = {

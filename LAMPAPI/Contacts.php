@@ -122,22 +122,32 @@
 
 	function saveEditContact($dictInputData, $providedConnection){
 		//checks for validity of email and phone entries
-		if (hasSpaces($dictInputData["InputEmail"]) || hasPlus($dictInputData["InputEmail"])) {
-			returnWithInfo(-7, "", "", "Emails cannot contain spaces or aliases");
+		if($dictInputData["InputFirstName"] == "" && $dictInputData["InputLastName"] == "" && $dictInputData["InputEmail"] == "" && $dictInputData["InputPhone"] == ""){
+			returnWithInfo(-9, "", "", "Cannot add empty contact.");
 			return;
 		}
-		$emailArr = explode("@", $dictInputData["InputEmail"]);
-		if (count($emailArr) != 2) {
-			returnWithInfo(-8, "", "", "Invalid email provided. Please use the traditional yourIdentifier@domainHere");
-			return;
+		if(!($dictInputData["InputEmail"] == "")){
+			if (hasSpaces($dictInputData["InputEmail"]) || hasPlus($dictInputData["InputEmail"])) {
+				returnWithInfo(-7, "", "", "Invalid email. Cannot<br>contain spaces or aliases");
+				return;
+			}
+			$resArr = 0;
+			$emailArr = explode("@", $dictInputData["InputEmail"]);
+			if (count($emailArr) != 2) {
+				returnWithInfo(-8, "", "", "Invalid email. Use the traditional<br>yourIdentifier@domainHere");
+				return;
+			}
 		}
-		if (strlen($dictInputData["InputPhone"]) < 6 || strlen($dictInputData["InputPhone"]) > 15) {
-			returnWithInfo(-10, "", "", "Invalid Phone Number. By E.164, International Phone Numbers must have 6 to 15 digits (area+full country code (zeros included) included).");
-			return;
-		}
-		elseif(!NumericOnly($dictInputData["InputPhone"])) {
-			returnWithInfo(-11, "", "", "Enter Phone Numbers with ONLY Integer Values.");
-			return;
+
+		if(!($dictInputData["InputPhone"] == "")) {		
+			if (countNumericChars($dictInputData["InputPhone"]) < 6 || countNumericChars($dictInputData["InputPhone"]) > 15) {
+				returnWithInfo(-10, "", "", "Invalid Phone. International Phone<br>Numbers must have 6 to 15 digits");
+				return;
+			}
+			if(!onlyDashesAndNumbers($dictInputData["InputPhone"])) {
+				returnWithInfo(-11, "", "", "Invalid Phone. Must only<br>contain numbers or dashes.");
+				return;
+			}
 		}
 
 		//sql commands
@@ -162,7 +172,7 @@
 	}
 
 	function changePhoneNumber($dictInputData, $providedConnection) {
-		if (strlen($dictInputData["InputPhone"]) < 6 || strlen($dictInputData["InputPhone"]) > 15) {
+		if (countNumericChars($dictInputData["InputPhone"]) < 6 || countNumericChars($dictInputData["InputPhone"]) > 15) {
 			returnWithInfo(-10, "", "", "Invalid Phone Number. By E.164, International Phone Numbers must have 6 to 15 digits (area+full country code (zeros included) included).");
 			return;
 		}
@@ -222,23 +232,32 @@
 
 	function addContact($dictInputData, $providedConnection)
 	{
-		if (hasSpaces($dictInputData["InputEmail"]) || hasPlus($dictInputData["InputEmail"])) {
-			returnWithInfo(-7, "", "", "Emails cannot contain spaces or aliases");
+		if($dictInputData["InputFirstName"] == "" && $dictInputData["InputLastName"] == "" && $dictInputData["InputEmail"] == "" && $dictInputData["InputPhone"] == ""){
+			returnWithInfo(-9, "", "", "Cannot add empty contact.");
 			return;
 		}
-		$resArr = 0;
-		$emailArr = explode("@", $dictInputData["InputEmail"]);
-		if (count($emailArr) != 2) {
-			returnWithInfo(-8, "", "", "Invalid email provided. Please use the traditional yourIdentifier@domainHere");
-			return;
+		if(!($dictInputData["InputEmail"] == "")){
+			if (hasSpaces($dictInputData["InputEmail"]) || hasPlus($dictInputData["InputEmail"])) {
+				returnWithInfo(-7, "", "", "Invalid email. Cannot<br>contain spaces or aliases");
+				return;
+			}
+			$resArr = 0;
+			$emailArr = explode("@", $dictInputData["InputEmail"]);
+			if (count($emailArr) != 2) {
+				returnWithInfo(-8, "", "", "Invalid email. Use the traditional<br>yourIdentifier@domainHere");
+				return;
+			}
 		}
-		if (strlen($dictInputData["InputPhone"]) < 6 || strlen($dictInputData["InputPhone"]) > 15) {
-			returnWithInfo(-10, "", "", "Invalid Phone Number. By E.164, International Phone Numbers must have 6 to 15 digits (area+full country code (zeros included) included).");
-			return;
-		}
-		elseif(!NumericOnly($dictInputData["InputPhone"])) {
-			returnWithInfo(-11, "", "", "Enter Phone Numbers with ONLY Integer Values.");
-			return;
+
+		if(!($dictInputData["InputPhone"] == "")) {		
+			if (countNumericChars($dictInputData["InputPhone"]) < 6 || countNumericChars($dictInputData["InputPhone"]) > 15) {
+				returnWithInfo(-10, "", "", "Invalid Phone. International Phone<br>Numbers must have 6 to 15 digits");
+				return;
+			}
+			if(!onlyDashesAndNumbers($dictInputData["InputPhone"])) {
+				returnWithInfo(-11, "", "", "Invalid Phone. Must only<br>contain numbers or dashes.");
+				return;
+			}
 		}
 
 		$sqlCMD = $providedConnection->prepare("INSERT INTO Contacts (FirstName, LastName, Email, Phone, UserID) VALUES (?, ?, ?, ?, ?)");
@@ -302,6 +321,14 @@
 	}
 	function hasAtSymbol($myString) {
 		return (strpos($myString, '@') !== false);
+	}
+
+	function onlyDashesAndNumbers($str) {
+		return strspn($str, '0123456789-') === strlen($str);
+	}
+
+	function countNumericChars($str) {
+		return strlen(preg_replace('/[^0-9]/', '', $str));
 	}
 
 	function NumericOnly($str) {

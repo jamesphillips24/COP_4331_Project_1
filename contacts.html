@@ -6,12 +6,24 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contacts</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body{
+        /*background-color: #f5f6fa;*/
+        background-image: url(images/more_sharkies.png);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+    }
+  </style>
 </head>
+
+<button id="logout-btn" class="logout-btn red-btn">Logout</button>
 
 <body>
   <div class="card">
     <header class="site-header">
-      <h1>Contacts</h1>
+      <h1>Sharky Contact Manager</h1>
     </header>
 
     <div class="card-header">
@@ -55,8 +67,10 @@
     <input type="text" id="contactLastName" placeholder="Last Name"><br>
     <input type="text" id="contactEmail" placeholder="Email"><br>
     <input type="text" id="contactPhone" placeholder="Phone"><br>
-    <button id="saveContactBtn">Save</button>
-    <button id="cancelContactBtn">Cancel</button>
+    <small id = "addContactError" class = "error" style = "visibility: visible;">Format error</small><br>
+
+    <button id="saveContactBtn" class="green-btn">Save</button>
+    <button id="cancelContactBtn" class = "red-btn">Cancel</button>
   </div>
 
   <div class="editContactBox" id="editContactForm" style="display:none">
@@ -65,10 +79,11 @@
     <input type="text" id="editContactLastName" placeholder="Last Name"><br>
     <input type="text" id="editContactEmail" placeholder="Email"><br>
     <input type="text" id="editContactPhone" placeholder="Phone"><br>
-    <button id="saveEditContactBtn" data-id="-1">Save</button>
-    <button id="cancelEditContactBtn">Cancel</button>
-  </div>
+    <small id = "editContactError" class = "error" style = "visibility: visible;">Format error</small><br>
 
+    <button id="saveEditContactBtn" class="green-btn" data-id="-1">Save</button>
+    <button id="cancelEditContactBtn" class = "red-btn">Cancel</button>
+  </div>
   <script src="js/app.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
