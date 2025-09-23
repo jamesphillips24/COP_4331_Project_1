@@ -19,6 +19,7 @@ body{
     color: red;
     text-align: center;
     line-height: 0;
+    justify-content: center;
 }
 
 .errorSignup{ /* Signup passwords do not match or username already in use */
